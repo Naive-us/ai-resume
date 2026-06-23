@@ -1,0 +1,801 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>孙游阳 - AI研发工程师求职报告</title>
+    <!-- 引入极具科技感的字体：Inter 用于正文，Fira Code 用于代码与技术栈，Orbitron 用于大标题与数字 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            /* 赛博朋克/AI 主题色盘 */
+            --bg-base: #030712;
+            --bg-glass: rgba(17, 24, 39, 0.6);
+            --primary: #00f0ff; /* 赛博蓝 */
+            --secondary: #00ff66; /* 矩阵绿 */
+            --accent: #8a2be2; /* 深度紫 */
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-glow: rgba(0, 240, 255, 0.3);
+            
+            --font-main: 'Inter', sans-serif;
+            --font-tech: 'Fira Code', monospace;
+            --font-display: 'Orbitron', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            overflow: hidden; /* 隐藏滚动条，由内部机制接管 */
+            height: 100vh;
+            width: 100vw;
+            user-select: none; /* 防止演示时误选文字 */
+        }
+
+        /* 动态背景画布 */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* 幻灯片容器与逻辑 */
+        .presentation-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 10vw;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 内容层与安全区 (保持 16:9 比例感) */
+        .slide-content {
+            width: 100%;
+            max-width: 1400px;
+            max-height: 90vh;
+            position: relative;
+        }
+
+        /* --- 动画体系 (当 slide active 时触发内部元素的入场) --- */
+        .slide .animate-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .slide.active .animate-up {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 错落延迟 */
+        .delay-100 { transition-delay: 100ms !important; }
+        .delay-200 { transition-delay: 200ms !important; }
+        .delay-300 { transition-delay: 300ms !important; }
+        .delay-400 { transition-delay: 400ms !important; }
+        .delay-500 { transition-delay: 500ms !important; }
+
+        /* 通用排版 */
+        h1, h2, h3 { font-family: var(--font-display); letter-spacing: 1px; }
+        
+        .title-glow {
+            font-size: 5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(0, 240, 255, 0.4);
+            margin-bottom: 20px;
+        }
+
+        .slide-header {
+            font-size: 3rem;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            border-left: 6px solid var(--primary);
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .slide-header::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(to right, var(--primary), transparent);
+        }
+
+        .tech-text { font-family: var(--font-tech); color: var(--primary); }
+        .highlight { color: var(--secondary); font-weight: bold; text-shadow: 0 0 10px rgba(0,255,102,0.3); }
+        .highlight-num { font-family: var(--font-display); font-size: 1.2em; color: var(--primary); }
+
+        /* 3D 毛玻璃卡片基类 */
+        .glass-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
+            transform-style: preserve-3d;
+        }
+        
+        /* 交互悬停发光 */
+        .glass-card:hover {
+            border-color: var(--border-glow);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.15), 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 卡片内部元素产生深度视差 */
+        .glass-card > * { transform: translateZ(30px); }
+
+        /* --- 布局特化 --- */
+        
+        /* 首页布局 */
+        .hero-layout { text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+        .typewriter-container { display: inline-block; overflow: hidden; white-space: nowrap; border-right: 3px solid var(--primary); animation: blink-caret .75s step-end infinite; }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--primary); } }
+
+        /* 两栏或多栏网格 */
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 40px; }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        
+        /* 列表项美化 */
+        .tech-list { list-style: none; }
+        .tech-list li { margin-bottom: 24px; font-size: 1.1rem; line-height: 1.6; position: relative; padding-left: 35px; color: var(--text-muted); }
+        .tech-list li::before {
+            content: '▹'; font-family: var(--font-tech); position: absolute; left: 0; top: 0;
+            color: var(--primary); font-size: 1.5rem; line-height: 1.2;
+        }
+        .tech-list li strong { color: var(--text-main); }
+
+        /* 时间轴 */
+        .timeline { position: relative; width: 100%; margin-top: 40px; }
+        .timeline::before {
+            content: ''; position: absolute; left: 50%; top: 0; transform: translateX(-50%);
+            width: 2px; height: 100%; background: linear-gradient(to bottom, var(--primary), var(--secondary), transparent);
+        }
+        .timeline-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 60px; width: 100%; }
+        .timeline-item:nth-child(even) { flex-direction: row-reverse; }
+        .timeline-content { width: 45%; }
+        .timeline-dot {
+            width: 20px; height: 20px; background: var(--bg-base); border: 4px solid var(--primary);
+            border-radius: 50%; position: absolute; left: 50%; transform: translateX(-50%);
+            box-shadow: 0 0 20px var(--primary); z-index: 2;
+        }
+
+        /* 技能胶囊标签 */
+        .skills-container { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .skill-pill {
+            padding: 12px 24px; border-radius: 30px; font-family: var(--font-tech); font-size: 1rem;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-main); transition: all 0.3s; cursor: default;
+        }
+        .skill-pill:hover {
+            background: rgba(0, 240, 255, 0.1); border-color: var(--primary);
+            color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,240,255,0.2);
+        }
+
+        /* 头像/图片容器 */
+        .avatar-glow {
+            width: 120px; height: 120px; border-radius: 50%; margin-bottom: 30px;
+            border: 2px solid var(--primary); box-shadow: 0 0 30px rgba(0,240,255,0.5);
+            object-fit: cover;
+        }
+
+        /* --- 导航与进度 UI --- */
+        .controls {
+            position: fixed; bottom: 30px; right: 40px; z-index: 100;
+            display: flex; gap: 15px;
+        }
+        .control-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: white; width: 50px; height: 50px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; font-size: 1.2rem; transition: all 0.3s; backdrop-filter: blur(5px);
+        }
+        .control-btn:hover { background: var(--primary); color: var(--bg-base); box-shadow: 0 0 20px var(--primary); transform: scale(1.1); }
+
+        .progress-bar-container {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 4px;
+            background: rgba(255,255,255,0.05); z-index: 100;
+        }
+        .progress-bar {
+            height: 100%; width: 0%; background: linear-gradient(to right, var(--primary), var(--secondary));
+            transition: width 0.4s ease; box-shadow: 0 0 10px var(--primary);
+        }
+        
+        .page-indicator {
+            position: fixed; bottom: 45px; left: 40px; z-index: 100;
+            font-family: var(--font-tech); font-size: 1.2rem; color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 背景粒子画布 -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- UI 控件 -->
+    <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
+    <div class="page-indicator"><span id="current-page">1</span> / <span id="total-pages">9</span></div>
+    <div class="controls">
+        <button class="control-btn" id="prev-btn" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button>
+        <button class="control-btn" id="next-btn" onclick="nextSlide()"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+    <div class="presentation-container">
+        
+        <!-- Slide 1: 封面 -->
+        <div class="slide active">
+            <div class="slide-content hero-layout">
+                <img src="https://placehold.co/200x200/030712/00f0ff?text=AI" alt="Avatar" class="avatar-glow animate-up">
+                <h1 class="title-glow animate-up delay-100">孙 游 阳</h1>
+                <h2 class="animate-up delay-200" style="color: var(--text-muted); margin-bottom: 20px;">AI 研发工程师</h2>
+                
+                <div class="animate-up delay-300" style="font-size: 1.5rem; margin-bottom: 40px; height: 35px;">
+                    <span class="tech-text typewriter-container" id="typewriter"></span>
+                </div>
+                
+                <div class="glass-card animate-up delay-400 tilt-card" style="display: inline-flex; gap: 30px; padding: 20px 40px; border-radius: 50px;">
+                    <span><i class="fa-solid fa-cake-candles tech-text"></i> 24岁</span>
+                    <span><i class="fa-solid fa-flag tech-text"></i> 共产党员</span>
+                    <span><i class="fa-solid fa-graduation-cap tech-text"></i> 硕士</span>
+                    <span><i class="fa-solid fa-phone tech-text"></i> 17751977509</span>
+                </div>
+                <p class="animate-up delay-500" style="margin-top: 50px; color: var(--text-muted); opacity: 0.7;"><i class="fa-solid fa-arrow-right-arrow-left fa-fade"></i> 使用方向键或点击右下角控制翻页</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: 核心优势 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-header animate-up">核心优势与竞争力</h2>
+                <div class="grid-layout">
+                    <div class="glass-card animate-up delay-100 tilt-card">
+                        <i class="fa-solid fa-microchip tech-text" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                        <h3>业务落地与架构</h3>
+                        <p style="color:var(--text-muted); margin-top:15px; line-height: 1.6;">聚焦大模型业务落地，具备 <strong>多 Agent 架构设计</strong> 与企业级 Agent 调优经验。打通底层大模型与上层商业应用的壁垒。</p>
+                    </div>
+                    <div class="glass-card animate-up delay-200 tilt-card">
+                        <i class="fa-solid fa-book-open-reader tech-text" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                        <h3>科研硬实力</h3>
+                        <p style="color:var(--text-muted); margin-top:15px; line-height: 1.6;">拥有扎实的多模态科研背景，以第一作者在 ICIC(CCF-C) 及 SCI 发表3篇论文 并有一篇 <strong> AAAI(CCF-A) 在投</strong> 。</p>
+                    </div>
+                    <div class="glass-card animate-up delay-300 tilt-card">
+                        <i class="fa-solid fa-chart-network tech-text" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                        <h3>数据建模能力</h3>
+                        <p style="color:var(--text-muted); margin-top:15px; line-height: 1.6;">作为队长负责核心解决方案，带队斩获美赛 M 奖、国研赛等 <strong>近 10 项国家级及国际级</strong> 数学建模大奖。</p>
+                    </div>
+                    <div class="glass-card animate-up delay-400 tilt-card">
+                        <i class="fa-solid fa-bolt tech-text" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                        <h3>敏捷开发理念</h3>
+                        <p style="color:var(--text-muted); margin-top:15px; line-height: 1.6;">践行 <span class="tech-text">Vibe Coding</span> 敏捷开发模式，致力于将前沿 AI 技术高效转化为高可用的商业产品。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: 教育背景 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-header animate-up">教育背景与学术成果</h2>
+                <div class="grid-layout animate-up delay-100" style="grid-template-columns: 1fr 1fr; gap: 40px; align-items: stretch; margin-top: 40px;">
+                    
+                    <!-- 苏州大学 -->
+                    <div class="glass-card tilt-card" style="padding: 40px; display: flex; flex-direction: column;">
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h3 style="color: var(--primary); font-size: 1.6rem;">苏州大学 <span style="font-size: 1rem; color: var(--text-muted); font-weight: normal;">(211, 双一流)</span></h3>
+                                <span class="tech-text" style="background: rgba(0,240,255,0.1); padding: 6px 14px; border-radius: 20px; font-size: 0.9rem;">2024 - 2027</span>
+                            </div>
+                            <p style="font-size: 1.1rem; color: var(--text-main);"><strong>硕士 · 计算机科学与技术</strong> <span style="color: var(--secondary); font-size: 1rem; margin-left: 10px;">(Top 15%)</span></p>
+                        </div>
+                        <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin: 0 0 25px 0;">
+                        <ul class="tech-list" style="margin-bottom:0; flex-grow: 1;">
+                            <li>以第一作者身份在 <strong>ICIC</strong> (多模态, CCF-C) 发表论文 2 篇。</li>
+                            <li><strong>AAAI</strong> (多模态+LLM, CCF-A) 论文在投 1 篇。</li>
+                            <li>连续两年荣获研究生学业一等奖学金。</li>
+                        </ul>
+                    </div>
+
+                    <!-- 徐州医科大学 -->
+                    <div class="glass-card tilt-card delay-200" style="padding: 40px; display: flex; flex-direction: column;">
+                        <div style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h3 style="color: var(--secondary); font-size: 1.6rem;">徐州医科大学 <span style="font-size: 1rem; color: var(--text-muted); font-weight: normal;">(省重点)</span></h3>
+                                <span class="tech-text" style="background: rgba(0,255,102,0.1); padding: 6px 14px; border-radius: 20px; font-size: 0.9rem;">2020 - 2024</span>
+                            </div>
+                            <p style="font-size: 1.1rem; color: var(--text-main);"><strong>本科 · 医学信息工程</strong> <span style="color: var(--primary); font-size: 1rem; margin-left: 10px;">(专业第一保研)</span></p>
+                        </div>
+                        <hr style="border:0; border-top: 1px solid rgba(255,255,255,0.1); margin: 0 0 25px 0;">
+                        <ul class="tech-list" style="margin-bottom:0; flex-grow: 1;">
+                            <li>第一主持完成国家级大创项目。</li>
+                            <li>第一作者发表 <strong>SCI 一篇 (JCR Q1)</strong>，1项专利/1项软著。</li>
+                            <li>获市级优秀共青团员、优秀实习生、校一等奖学金(3次)、优秀毕业生、优秀毕业论文等荣誉。</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Bosch 实习 1 -->
+        <div class="slide">
+            <div class="slide-content">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 40px;">
+                    <h2 class="slide-header animate-up" style="margin-bottom:0;">名企实习 <span style="font-size:0.5em;color:var(--text-muted);font-weight:normal;display:block;">Bosch博世 (世界500强) 智能驾驶部门</span></h2>
+                    <span class="tech-text animate-up delay-100" style="font-size: 1.2rem; background:rgba(0,240,255,0.1); padding: 5px 15px; border-radius: 20px;">2025.06 - 2025.11</span>
+                </div>
+                
+                <div class="glass-card animate-up delay-200 tilt-card">
+                    <h3 style="color:var(--primary); font-size: 2rem; margin-bottom: 10px;">Supersonic NL2SQL Agent <span style="font-size:1rem; color:var(--text-muted); font-weight:normal; border:1px solid #555; padding: 2px 8px; border-radius: 5px; margin-left: 10px;">第一负责人</span></h3>
+                    <p class="tech-text" style="font-size:0.9rem; margin-bottom: 25px;">[ 技术栈: Java, LangChain4j, React, MySQL, Qwen3-Coder, RAG ]</p>
+                    
+                    <div class="grid-layout" style="grid-template-columns: 1.5fr 1fr; gap: 30px;">
+                        <div>
+                            <ul class="tech-list">
+                                <li><strong>深度检索优化：</strong> 针对 Mapper 召回瓶颈，建立动态路由，使复杂查询直通<span class="highlight">“LLM+RAG+多轮对话”</span>链路。</li>
+                                <li><strong>Prompt 工程与改写：</strong> 扩大元数据召回，引入大模型 Query 改写消除歧义，动态注入高相关性 Few-shot。在实际业务样本中，准确率由 62% 跃升至 <span class="highlight-num">85%</span>。</li>
+                                <li><strong>链路优化与闭环：</strong> 设计绕过 LLM 解析的独立 SQL 执行通道，封装标准化契约。前端重构视图强制刷新，查询响应时间从 8s 骤降至 <span class="highlight-num">1.5s</span>。</li>
+                            </ul>
+                        </div>
+                        <div style="display:flex; flex-direction:column; justify-content:center; gap: 20px;">
+                            <div style="background: rgba(0,0,0,0.5); padding: 20px; border-radius: 10px; border-left: 4px solid var(--primary); text-align:center;">
+                                <div style="font-size: 1rem; color: var(--text-muted);">查询准确率提升</div>
+                                <div style="font-family: var(--font-display); font-size: 3rem; color: var(--secondary);">62% <i class="fa-solid fa-arrow-right" style="font-size:1.5rem; margin:0 10px; color:var(--text-muted);"></i> 85%</div>
+                            </div>
+                            <div style="background: rgba(0,0,0,0.5); padding: 20px; border-radius: 10px; border-left: 4px solid #f59e0b; text-align:center;">
+                                <div style="font-size: 1rem; color: var(--text-muted);">响应时间骤降</div>
+                                <div style="font-family: var(--font-display); font-size: 3rem; color: #f59e0b;">8.0s <i class="fa-solid fa-arrow-right" style="font-size:1.5rem; margin:0 10px; color:var(--text-muted);"></i> 1.5s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Bosch 实习 2 -->
+        <div class="slide">
+            <div class="slide-content">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 40px;">
+                    <h2 class="slide-header animate-up" style="margin-bottom:0;">架构演进 <span style="font-size:0.5em;color:var(--text-muted);font-weight:normal;display:block;">Bosch博世 - 智能协同与提效</span></h2>
+                </div>
+
+                <div class="grid-layout">
+                    <div class="glass-card animate-up delay-100 tilt-card" style="display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <h3 style="color:var(--secondary); font-size: 1.8rem; margin-bottom: 15px;"><i class="fa-solid fa-network-wired"></i> 代码图谱与检索</h3>
+                            <h4 style="color:var(--text-muted); margin-bottom: 20px; font-weight:normal;">Aider Vibe Coding Agent</h4>
+                            <p style="color:var(--text-main); line-height: 1.7;">基于 <span class="tech-text">NetworkX</span> 构建代码依赖关系图，并创新引入 <span class="tech-text">PageRank</span> 算法对代码节点进行重要性排序。</p>
+                            <br>
+                            <p style="color:var(--text-main); line-height: 1.7;">结合个性化权重策略与基于二分搜索的上下文裁剪，在有限 Token 预算内精准锁定最优代码片段，<strong>完美平衡上下文完整性与高昂的推理成本</strong>。</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card animate-up delay-300 tilt-card" style="display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <h3 style="color:var(--accent); font-size: 1.8rem; margin-bottom: 15px;"><i class="fa-solid fa-robot"></i> 多Agent协作机制</h3>
+                            <h4 style="color:var(--text-muted); margin-bottom: 20px; font-weight:normal;">模型矩阵重构</h4>
+                            <p style="color:var(--text-main); line-height: 1.7;">深度拆解单体庞大的大模型架构，重构为高度协同的矩阵：</p>
+                            <ul class="tech-list" style="margin-top: 15px;">
+                                <li><strong>推理模型</strong> (负责逻辑规划)</li>
+                                <li><strong>Code模型</strong> (专注代码生成)</li>
+                                <li><strong>轻量模型</strong> (处理高频简单任务)</li>
+                            </ul>
+                            <p style="color:var(--text-main); line-height: 1.7; margin-top:10px;">实现了底层功能的完全解耦与高速上下文共享，显著提升了整体链路的生成效率。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: 科研项目 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-header animate-up">核心科研与算法实践</h2>
+                
+                <div class="glass-card animate-up delay-100 tilt-card" style="position: relative; overflow: hidden;">
+                    <!-- 装饰性光晕 -->
+                    <div style="position:absolute; top:-50px; right:-50px; width:200px; height:200px; background:var(--primary); filter:blur(100px); opacity:0.3;"></div>
+                    
+                    <h3 style="font-size: 2rem; margin-bottom: 10px;">多通道特征增强的情绪分析系统</h3>
+                    <p class="tech-text" style="font-size: 1rem; margin-bottom: 30px;">[ PyTorch, ERNIE, CNN + BiLSTM + MHA, Streamlit ]</p>
+                    
+                    <div class="grid-layout" style="grid-template-columns: 2fr 1fr; align-items: center;">
+                        <ul class="tech-list">
+                            <li><strong>深度融合架构：</strong> 基于 <span class="highlight">ERNIE</span> 预训练模型，创新构建 CNN + BiLSTM + 多头注意力 (MHA) 融合架构，实现从局部特征到全局语义的多层穿透建模。</li>
+                            <li><strong>复杂语义捕获：</strong> 设计浅层词义与深层语义动态融合机制。针对反讽、隐含情绪等高难度长尾场景。</li>
+                            <li><strong>工程落地：</strong> 基于 Streamlit 构建全栈 Web 应用，打通模型推理至前端可视化呈现的完整链路。</li>
+                        </ul>
+                        
+                        <div style="text-align: center;">
+                            <div style="display:inline-block; position:relative;">
+                                <svg width="160" height="160" viewBox="0 0 100 100">
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10" />
+                                    <circle cx="50" cy="50" r="45" fill="none" stroke="var(--primary)" stroke-width="10" stroke-dasharray="283" stroke-dashoffset="60" style="transition: stroke-dashoffset 2s ease;" transform="rotate(-90 50 50)" />
+                                </svg>
+                                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+                                    <div style="font-family:var(--font-display); font-size: 2rem; color:white;">+12.2%</div>
+                                    <div style="font-size:0.7rem; color:var(--text-muted);">准确率跃升</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: 竞赛荣誉 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-header animate-up">国家级与国际荣誉</h2>
+                
+                <div class="grid-layout grid-3">
+                    <div class="glass-card animate-up delay-100 tilt-card" style="text-align:center; padding:40px 20px;">
+                        <div style="width:80px; height:80px; border-radius:50%; background:rgba(0,240,255,0.1); display:flex; justify-content:center; align-items:center; margin:0 auto 20px; box-shadow: 0 0 20px rgba(0,240,255,0.2);">
+                            <i class="fa-solid fa-chart-pie tech-text" style="font-size:2.5rem;"></i>
+                        </div>
+                        <h3 style="margin-bottom:10px; font-size:1.3rem;">数学建模大奖</h3>
+                        <p style="color:var(--primary); font-size:0.9rem; margin-bottom:15px; font-family:var(--font-tech);">队长 / 核心解决方案</p>
+                        <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.6;">
+                            国研赛 国家级二等 <span style="color:var(--text-main);">(Top 5.5%)</span><br>
+                            美赛 M奖/国际一等 <span style="color:var(--text-main);">(Top 6.6%)</span><br>
+                            亚太赛 国家级一等 <span style="color:var(--text-main);">(Top 5%)</span><br>
+                            国赛 江苏省一等 <span style="color:var(--text-main);">(Top 6.6%)</span>
+                        </p>
+                    </div>
+
+                    <div class="glass-card animate-up delay-200 tilt-card" style="text-align:center; padding:40px 20px;">
+                        <div style="width:80px; height:80px; border-radius:50%; background:rgba(0,255,102,0.1); display:flex; justify-content:center; align-items:center; margin:0 auto 20px; box-shadow: 0 0 20px rgba(0,255,102,0.2);">
+                            <i class="fa-solid fa-rocket" style="font-size:2.5rem; color:var(--secondary);"></i>
+                        </div>
+                        <h3 style="margin-bottom:10px; font-size:1.3rem;">创新创业竞赛</h3>
+                        <p style="color:var(--secondary); font-size:0.9rem; margin-bottom:15px; font-family:var(--font-tech);">第一负责人 / 项目总策</p>
+                        <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.6;">
+                            互联网+省铜 (2024国际赛道金牌)<br>
+                            全国大学生市调大赛 省三等奖<br>
+                            国家级大创项目 第一主持
+                        </p>
+                    </div>
+
+                    <div class="glass-card animate-up delay-300 tilt-card" style="text-align:center; padding:40px 20px;">
+                        <div style="width:80px; height:80px; border-radius:50%; background:rgba(138,43,226,0.1); display:flex; justify-content:center; align-items:center; margin:0 auto 20px; box-shadow: 0 0 20px rgba(138,43,226,0.2);">
+                            <i class="fa-solid fa-medal" style="font-size:2.5rem; color:var(--accent);"></i>
+                        </div>
+                        <h3 style="margin-bottom:10px; font-size:1.3rem;">综合素质评优</h3>
+                        <p style="color:var(--accent); font-size:0.9rem; margin-bottom:15px; font-family:var(--font-tech);">全面发展 / 学术标兵</p>
+                        <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.6;">
+                            市级优秀共青团员<br>
+                            市级优秀实习生<br>
+                            校一等奖学金 (连续3次)<br>
+                            研究生学业一等奖学金(连续2次)<br>
+                            优秀毕业生、优秀学术干部
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: 技术栈技能矩阵 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2 class="slide-header animate-up">专业技能矩阵 (Tech Stack)</h2>
+                
+                <div style="display: flex; flex-direction: column; gap: 30px;">
+                    <div class="animate-up delay-100">
+                        <h3 style="color:var(--primary); font-size:1.2rem; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
+                            <i class="fa-solid fa-brain"></i> AI Agent / LLM 核心
+                        </h3>
+                        <div class="skills-container" style="border-left: 2px solid rgba(0,240,255,0.3); padding-left: 20px;">
+                            <span class="skill-pill">LangChain</span> <span class="skill-pill">RAG架构</span> 
+                            <span class="skill-pill">Multi-Agent协同</span> <span class="skill-pill">MCP</span> 
+                            <span class="skill-pill">Prompt Engineering</span> <span class="skill-pill">Tool Use</span> 
+                            <span class="skill-pill">Transformer</span> <span class="skill-pill">Lora 微调</span>
+                        </div>
+                    </div>
+
+                    <div class="animate-up delay-200">
+                        <h3 style="color:var(--secondary); font-size:1.2rem; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
+                            <i class="fa-solid fa-server"></i> 后端开发与高并发底层
+                        </h3>
+                        <div class="skills-container" style="border-left: 2px solid rgba(0,255,102,0.3); padding-left: 20px;">
+                            <span class="skill-pill">Java (Spring Boot)</span> <span class="skill-pill">多线程并发</span> 
+                            <span class="skill-pill">锁机制 (CAS/AQS)</span> <span class="skill-pill">MySQL调优</span> 
+                            <span class="skill-pill">Redis</span> <span class="skill-pill">RESTful API</span>
+                        </div>
+                    </div>
+
+                    <div class="animate-up delay-300">
+                        <h3 style="color:var(--accent); font-size:1.2rem; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
+                            <i class="fa-solid fa-layer-group"></i> 前端交互与工程化协同
+                        </h3>
+                        <div class="skills-container" style="border-left: 2px solid rgba(138,43,226,0.3); padding-left: 20px;">
+                            <span class="skill-pill">Python</span> <span class="skill-pill">React</span> 
+                            <span class="skill-pill">Vue</span> <span class="skill-pill">Streamlit看板</span> 
+                            <span class="skill-pill">Docker 容器化</span> <span class="skill-pill">Git</span>
+                            <span class="skill-pill" style="border-color: var(--text-main);">Vibe Coding</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: 封底 / Q&A -->
+        <div class="slide">
+            <div class="slide-content hero-layout">
+                <h1 class="title-glow animate-up">Let's Connect</h1>
+                <p class="animate-up delay-100" style="font-size: 1.8rem; margin: 20px 0 50px; color: var(--text-muted);">感谢聆听，期待您的指导与交流！</p>
+                
+                <div class="glass-card animate-up delay-200 tilt-card" style="padding: 40px 60px;">
+                    <div style="font-family: var(--font-tech); font-size: 1.5rem; display: flex; flex-direction: column; gap: 20px; align-items: flex-start;">
+                        <div style="display: flex; align-items: center; gap: 15px; cursor: pointer;" onclick="copyText('17751977509@163.com')" title="点击复制邮箱">
+                            <div style="width:50px;height:50px;border-radius:10px;background:rgba(0,240,255,0.1);display:flex;justify-content:center;align-items:center;color:var(--primary);">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <span>17751977509@163.com</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 15px; cursor: pointer;" onclick="copyText('17751977509')" title="点击复制手机号">
+                            <div style="width:50px;height:50px;border-radius:10px;background:rgba(0,255,102,0.1);display:flex;justify-content:center;align-items:center;color:var(--secondary);">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <span>17751977509</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="toast" style="position:fixed; bottom: 100px; left:50%; transform:translateX(-50%); background:var(--primary); color:var(--bg-base); padding: 10px 20px; border-radius:30px; font-weight:bold; opacity:0; transition: opacity 0.3s; pointer-events:none;">已复制到剪贴板！</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. 幻灯片控制逻辑 ---
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progress-bar');
+        const currentPageSpan = document.getElementById('current-page');
+        const totalPagesSpan = document.getElementById('total-pages');
+        
+        totalPagesSpan.innerText = totalSlides;
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                if (index === currentSlideIndex) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            
+            // 更新进度条与页码
+            const progress = ((currentSlideIndex) / (totalSlides - 1)) * 100;
+            progressBar.style.width = `${progress}%`;
+            currentPageSpan.innerText = currentSlideIndex + 1;
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides - 1) {
+                currentSlideIndex++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 0) {
+                currentSlideIndex--;
+                updateSlide();
+            }
+        }
+
+        // 键盘控制
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // 鼠标滚轮控制 (已防抖处理以防滑动过快)
+        let isScrolling = false;
+        document.addEventListener('wheel', (e) => {
+            if (isScrolling) return;
+            isScrolling = true;
+            if (e.deltaY > 0) nextSlide();
+            else if (e.deltaY < 0) prevSlide();
+            setTimeout(() => { isScrolling = false; }, 800); // 冷却时间适配动画时间
+        });
+
+        // 初始化
+        updateSlide();
+
+
+        // --- 2. 3D 悬浮视差特效 (Glassmorphism Tilt) ---
+        const tiltCards = document.querySelectorAll('.tilt-card');
+        
+        tiltCards.forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left; // 鼠标相对卡片的X坐标
+                const y = e.clientY - rect.top;  // 鼠标相对卡片的Y坐标
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // 限制最大旋转角度
+                const rotateX = ((y - centerY) / centerY) * -10; 
+                const rotateY = ((x - centerX) / centerX) * 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
+            });
+        });
+
+        // --- 3. 首页打字机特效 ---
+        const textArray = ["LLM Agent 架构设计", "NL2SQL 方案优化", "RAG 系统落地", "Vibe Coding 实践"];
+        let textIndex = 0;
+        let charIndex = 0;
+        const typeContainer = document.getElementById("typewriter");
+        let isDeleting = false;
+
+        function type() {
+            const currentText = textArray[textIndex];
+            if (isDeleting) {
+                typeContainer.textContent = currentText.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typeContainer.textContent = currentText.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentText.length) {
+                typeSpeed = 2000; // 停顿
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % textArray.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+        setTimeout(type, 1500); // 延迟启动
+
+        // 复制剪贴板功能
+        function copyText(text) {
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            
+            const toast = document.getElementById("toast");
+            toast.style.opacity = "1";
+            setTimeout(() => { toast.style.opacity = "0"; }, 2000);
+        }
+
+        // --- 4. 神经元/大模型连线动画背景 (Canvas) ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx = -this.vx;
+                if (this.y < 0 || this.y > height) this.vy = -this.vy;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0, 240, 255, 0.5)';
+                ctx.fill();
+            }
+        }
+
+        // 初始化粒子
+        const particleCount = Math.floor(window.innerWidth / 15); // 响应式密度
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                
+                // 绘制连线
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 150) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 240, 255, ${0.2 * (1 - distance/150)})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateCanvas);
+        }
+        
+        window.onload = function() {
+            animateCanvas();
+        };
+    </script>
+</body>
+</html>
