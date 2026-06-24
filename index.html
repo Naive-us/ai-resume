@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>孙游阳 - AI研发工程师求职报告</title>
+    <title>孙游阳 - AI研发工程师 - 在线简历</title>
     <!-- 引入极具科技感的字体：Inter 用于正文，Fira Code 用于代码与技术栈，Orbitron 用于大标题与数字 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -251,6 +250,68 @@
         .page-indicator {
             position: fixed; bottom: 45px; left: 40px; z-index: 100;
             font-family: var(--font-tech); font-size: 1.2rem; color: var(--text-muted);
+        }
+
+        /* --- 移动端适配 (Responsive Design) --- */
+        @media (max-width: 768px) {
+            /* 允许移动端内容超出时上下滚动，并隐藏滚动条 */
+            .slide {
+                padding: 40px 6vw 80px; 
+                align-items: flex-start; /* 避免居中导致顶部被裁剪 */
+                overflow-y: auto;
+                scrollbar-width: none; /* Firefox */
+            }
+            .slide::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+            
+            .slide-content { max-height: none; margin-top: 10px; }
+            .hero-layout { justify-content: flex-start !important; padding-top: 40px; }
+
+            /* 字体缩小 */
+            .title-glow { font-size: 2.8rem; }
+            .slide-header { font-size: 1.6rem; margin-bottom: 25px; padding-left: 15px; }
+            .slide-header::after { width: 50px; }
+            h3 { font-size: 1.3rem !important; }
+            p, li { font-size: 0.95rem !important; }
+            
+            .hero-layout h2 { font-size: 1.2rem; }
+            .hero-layout .tech-text { font-size: 1rem !important; }
+            .avatar-glow { width: 90px; height: 90px; margin-bottom: 15px; }
+
+            /* 强制所有网格布局在手机上变为单列 */
+            .grid-layout { grid-template-columns: 1fr !important; gap: 20px !important; }
+            
+            /* 卡片内边距减小 */
+            .glass-card { padding: 25px 20px !important; }
+            
+            /* Slide 1 卡片折叠 */
+            .hero-layout .glass-card {
+                flex-direction: column;
+                gap: 15px !important;
+                padding: 20px 30px !important;
+                border-radius: 20px !important;
+            }
+
+            /* 修复内联样式的双列布局 (如 Slide 4, 5 的标题区) */
+            .slide-content > div[style*="display:flex; justify-content:space-between"] {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 10px;
+                margin-bottom: 20px !important;
+            }
+
+            /* 列表与技能标签优化 */
+            .tech-list li { margin-bottom: 12px; padding-left: 25px; }
+            .tech-list li::before { font-size: 1.2rem; }
+            .skills-container { gap: 10px; }
+            .skill-pill { padding: 8px 16px; font-size: 0.85rem; }
+
+            /* 控件位置调整，防遮挡 */
+            .controls { bottom: 15px; right: 15px; gap: 10px; }
+            .control-btn { width: 40px; height: 40px; font-size: 1rem; }
+            .page-indicator { bottom: 25px; left: 15px; font-size: 1rem; }
+            
+            /* 移动端禁用过度 3D 偏移防误触 */
+            .tilt-card { transform: none !important; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5) !important; }
         }
     </style>
 </head>
@@ -655,12 +716,38 @@
         // 初始化
         updateSlide();
 
+        // --- 1.1 移动端手势滑动翻页 (Touch Swipe) ---
+        let touchStartX = 0;
+        let touchStartY = 0;
+        
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+        
+        document.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+            const xDiff = touchStartX - touchEndX;
+            const yDiff = touchStartY - touchEndY;
+            
+            // 确保横向滑动距离大于纵向滑动，并且距离足够大(防止当做上下滚动)
+            if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 50) {
+                if (xDiff > 0) {
+                    nextSlide(); // 向左滑 -> 下一页
+                } else {
+                    prevSlide(); // 向右滑 -> 上一页
+                }
+            }
+        }, { passive: true });
+
 
         // --- 2. 3D 悬浮视差特效 (Glassmorphism Tilt) ---
         const tiltCards = document.querySelectorAll('.tilt-card');
         
         tiltCards.forEach(card => {
             card.addEventListener('mousemove', e => {
+                if (window.innerWidth <= 768) return; // 移动端禁用3D视差逻辑
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left; // 鼠标相对卡片的X坐标
                 const y = e.clientY - rect.top;  // 鼠标相对卡片的Y坐标
