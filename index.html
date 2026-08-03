@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>孙游阳 - AI研发工程师 - 在线简历</title>
-    <!-- 引入极具科技感的字体：Inter 用于正文，Fira Code 用于代码与技术栈，Orbitron 用于大标题与数字 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
@@ -106,6 +106,16 @@
             transform: translateY(0);
         }
         
+        /* 悬浮呼吸动画 (用于头像) */
+        @keyframes float {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-12px) scale(1.02); }
+            100% { transform: translateY(0px) scale(1); }
+        }
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+        
         /* 错落延迟 */
         .delay-100 { transition-delay: 100ms !important; }
         .delay-200 { transition-delay: 200ms !important; }
@@ -181,6 +191,11 @@
         /* 两栏或多栏网格 */
         .grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 40px; }
         .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .advantage-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+        .advantage-card { min-height: 190px; padding: 26px 30px; }
+        .advantage-card .advantage-icon { font-size: 2.25rem !important; margin-bottom: 14px !important; }
+        .advantage-card h3 { font-size: 1.35rem; }
+        .advantage-card p { margin-top: 10px !important; line-height: 1.55 !important; }
         
         /* 列表项美化 */
         .tech-list { list-style: none; }
@@ -190,21 +205,6 @@
             color: var(--primary); font-size: 1.5rem; line-height: 1.2;
         }
         .tech-list li strong { color: var(--text-main); }
-
-        /* 时间轴 */
-        .timeline { position: relative; width: 100%; margin-top: 40px; }
-        .timeline::before {
-            content: ''; position: absolute; left: 50%; top: 0; transform: translateX(-50%);
-            width: 2px; height: 100%; background: linear-gradient(to bottom, var(--primary), var(--secondary), transparent);
-        }
-        .timeline-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 60px; width: 100%; }
-        .timeline-item:nth-child(even) { flex-direction: row-reverse; }
-        .timeline-content { width: 45%; }
-        .timeline-dot {
-            width: 20px; height: 20px; background: var(--bg-base); border: 4px solid var(--primary);
-            border-radius: 50%; position: absolute; left: 50%; transform: translateX(-50%);
-            box-shadow: 0 0 20px var(--primary); z-index: 2;
-        }
 
         /* 技能胶囊标签 */
         .skills-container { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
@@ -220,10 +220,56 @@
 
         /* 头像/图片容器 */
         .avatar-glow {
-            width: 120px; height: 120px; border-radius: 50%; margin-bottom: 30px;
-            border: 2px solid var(--primary); box-shadow: 0 0 30px rgba(0,240,255,0.5);
+            width: 140px; height: 140px; border-radius: 50%; margin-bottom: 20px;
+            background: rgba(0, 240, 255, 0.05);
+            border: 2px solid rgba(0, 240, 255, 0.3); 
+            box-shadow: 0 0 40px rgba(0,240,255,0.3), inset 0 0 20px rgba(0,240,255,0.1);
             object-fit: cover;
+            padding: 10px;
         }
+        
+        .hello-badge {
+            background: rgba(0, 255, 102, 0.15);
+            color: var(--secondary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0, 255, 102, 0.3);
+            font-weight: 600;
+        }
+
+        /* 首页与尾页：更克制的候选人个人品牌视觉 */
+        .hero-layout { position: relative; overflow: hidden; }
+        .hero-layout::before {
+            content: ''; position: absolute; width: 780px; height: 780px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,240,255,.13) 0%, rgba(138,43,226,.07) 36%, transparent 68%);
+            top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+        }
+        .identity-orbit {
+            width: 176px; height: 176px; border-radius: 50%; position: relative; margin: 0 auto 22px;
+            display: grid; place-items: center; background: linear-gradient(145deg, rgba(0,240,255,.18), rgba(138,43,226,.16));
+            border: 1px solid rgba(0,240,255,.65); box-shadow: 0 0 0 10px rgba(0,240,255,.035), 0 0 60px rgba(0,240,255,.24), inset 0 0 35px rgba(0,240,255,.12);
+        }
+        .identity-orbit::before, .identity-orbit::after { content:''; position:absolute; border-radius:50%; border:1px dashed rgba(0,240,255,.45); }
+        .identity-orbit::before { inset:-16px; animation: orbit-spin 18s linear infinite; }
+        .identity-orbit::after { inset:12px; border-color:rgba(0,255,102,.45); animation: orbit-spin 12s linear infinite reverse; }
+        .identity-monogram { font-family: var(--font-display); font-size: 3.55rem; font-weight: 900; letter-spacing: -.1em; transform: translateX(-.04em); color:#ecfeff; text-shadow: 0 0 22px rgba(0,240,255,.8); }
+        .orbit-dot { position:absolute; width:10px; height:10px; border-radius:50%; background:var(--secondary); box-shadow:0 0 15px var(--secondary); top:-5px; left:50%; }
+        @keyframes orbit-spin { to { transform: rotate(360deg); } }
+        .hero-kicker { font: 600 .8rem var(--font-tech); color:var(--primary); letter-spacing:.18em; text-transform:uppercase; margin-bottom:12px; }
+        .hero-role { font-size: 1.2rem; letter-spacing:.12em; color:var(--text-muted); margin-bottom:25px; }
+        .hero-stats { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:25px; }
+        .hero-stat { padding:8px 13px; border-radius:8px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.1); color:#d1d5db; font: .78rem var(--font-tech); }
+        .hero-stat b { color:var(--secondary); font-weight:600; }
+        .connect-card { max-width:750px; width:100%; padding:34px 42px !important; position:relative; overflow:hidden; }
+        .connect-card::after { content:'OPEN TO WORK'; position:absolute; right:-52px; top:20px; transform:rotate(35deg); color:rgba(0,240,255,.08); font:900 2rem var(--font-display); }
+        .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; position:relative; z-index:1; }
+        .contact-item { display:flex; align-items:center; gap:14px; padding:16px; border-radius:12px; background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.07); text-align:left; cursor:pointer; transition:.25s ease; }
+        .contact-item:hover { transform:translateY(-3px); border-color:var(--border-glow); background:rgba(0,240,255,.06); }
+        .contact-item small { display:block; color:var(--text-muted); font: .68rem var(--font-tech); margin-bottom:3px; }
+        .contact-item span { font: .9rem var(--font-tech); color:var(--text-main); }
+        .contact-icon { width:42px; height:42px; flex:0 0 42px; border-radius:10px; display:grid; place-items:center; background:rgba(0,240,255,.1); color:var(--primary); }
 
         /* --- 导航与进度 UI --- */
         .controls {
@@ -254,19 +300,17 @@
 
         /* --- 移动端适配 (Responsive Design) --- */
         @media (max-width: 768px) {
-            /* 允许移动端内容超出时上下滚动，并隐藏滚动条 */
             .slide {
                 padding: 40px 6vw 80px; 
-                align-items: flex-start; /* 避免居中导致顶部被裁剪 */
+                align-items: flex-start; 
                 overflow-y: auto;
-                scrollbar-width: none; /* Firefox */
+                scrollbar-width: none; 
             }
-            .slide::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+            .slide::-webkit-scrollbar { display: none; } 
             
             .slide-content { max-height: none; margin-top: 10px; }
             .hero-layout { justify-content: flex-start !important; padding-top: 40px; }
 
-            /* 字体缩小 */
             .title-glow { font-size: 2.8rem; }
             .slide-header { font-size: 1.6rem; margin-bottom: 25px; padding-left: 15px; }
             .slide-header::after { width: 50px; }
@@ -275,15 +319,21 @@
             
             .hero-layout h2 { font-size: 1.2rem; }
             .hero-layout .tech-text { font-size: 1rem !important; }
-            .avatar-glow { width: 90px; height: 90px; margin-bottom: 15px; }
+            .avatar-glow { width: 110px; height: 110px; margin-bottom: 15px; }
+            .identity-orbit { width:130px; height:130px; margin-bottom:18px; }
+            .identity-monogram { font-size:2.65rem; }
+            .hero-role { font-size:1rem; }
+            .contact-grid { grid-template-columns:1fr; }
+            .connect-card { padding:24px !important; }
 
-            /* 强制所有网格布局在手机上变为单列 */
             .grid-layout { grid-template-columns: 1fr !important; gap: 20px !important; }
-            
-            /* 卡片内边距减小 */
             .glass-card { padding: 25px 20px !important; }
+            .advantage-grid { gap: 14px !important; }
+            .advantage-card { min-height: 0; padding: 20px !important; }
+            .advantage-card .advantage-icon { font-size: 1.8rem !important; margin-bottom: 10px !important; }
+            .advantage-card h3 { font-size: 1.15rem !important; }
+            .advantage-card p { font-size: .9rem !important; line-height: 1.55 !important; }
             
-            /* Slide 1 卡片折叠 */
             .hero-layout .glass-card {
                 flex-direction: column;
                 gap: 15px !important;
@@ -291,7 +341,6 @@
                 border-radius: 20px !important;
             }
 
-            /* 修复内联样式的双列布局 (如 Slide 4, 5 的标题区) */
             .slide-content > div[style*="display:flex; justify-content:space-between"] {
                 flex-direction: column;
                 align-items: flex-start !important;
@@ -299,19 +348,27 @@
                 margin-bottom: 20px !important;
             }
 
-            /* 列表与技能标签优化 */
             .tech-list li { margin-bottom: 12px; padding-left: 25px; }
             .tech-list li::before { font-size: 1.2rem; }
             .skills-container { gap: 10px; }
             .skill-pill { padding: 8px 16px; font-size: 0.85rem; }
 
-            /* 控件位置调整，防遮挡 */
             .controls { bottom: 15px; right: 15px; gap: 10px; }
             .control-btn { width: 40px; height: 40px; font-size: 1rem; }
             .page-indicator { bottom: 25px; left: 15px; font-size: 1rem; }
             
-            /* 移动端禁用过度 3D 偏移防误触 */
             .tilt-card { transform: none !important; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5) !important; }
+        }
+
+        @media (max-width: 420px) {
+            .slide { padding: 26px 5vw 78px; }
+            .slide-header { font-size: 1.42rem; margin-bottom: 20px; }
+            .title-glow { font-size: 2.25rem; }
+            .hero-stats { gap: 8px; }
+            .hero-stat { width: 100%; text-align: center; }
+            .controls { bottom: 12px; right: 12px; }
+            .control-btn { width: 38px; height: 38px; }
+            .page-indicator { bottom: 23px; left: 12px; font-size: .88rem; }
         }
     </style>
 </head>
@@ -322,7 +379,7 @@
 
     <!-- UI 控件 -->
     <div class="progress-bar-container"><div class="progress-bar" id="progress-bar"></div></div>
-    <div class="page-indicator"><span id="current-page">1</span> / <span id="total-pages">9</span></div>
+    <div class="page-indicator"><span id="current-page">1</span> / <span id="total-pages">11</span></div>
     <div class="controls">
         <button class="control-btn" id="prev-btn" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button>
         <button class="control-btn" id="next-btn" onclick="nextSlide()"><i class="fa-solid fa-chevron-right"></i></button>
@@ -333,21 +390,22 @@
         <!-- Slide 1: 封面 -->
         <div class="slide active">
             <div class="slide-content hero-layout">
-                <img src="https://placehold.co/200x200/030712/00f0ff?text=AI" alt="Avatar" class="avatar-glow animate-up">
-                <h1 class="title-glow animate-up delay-100">孙 游 阳</h1>
-                <h2 class="animate-up delay-200" style="color: var(--text-muted); margin-bottom: 20px;">AI 研发工程师</h2>
-                
-                <div class="animate-up delay-300" style="font-size: 1.5rem; margin-bottom: 40px; height: 35px;">
+                <div class="identity-orbit animate-up floating" aria-label="孙游阳个人标识">
+                    <span class="orbit-dot"></span><span class="identity-monogram">SY</span>
+                </div>
+                <div class="hero-kicker animate-up delay-100">AI Engineer / 2026 Graduate</div>
+                <h1 class="title-glow animate-up delay-100" style="margin-bottom: 8px;">孙 游 阳</h1>
+                <h2 class="hero-role animate-up delay-200">AI 研发工程师 · 多智能体 / 算子编译 / 企业级落地</h2>
+                <div class="animate-up delay-300" style="font-size: 1.3rem; margin-bottom: 14px; height: 35px;">
                     <span class="tech-text typewriter-container" id="typewriter"></span>
                 </div>
-                
-                <div class="glass-card animate-up delay-400 tilt-card" style="display: inline-flex; gap: 30px; padding: 20px 40px; border-radius: 50px;">
-                    <span><i class="fa-solid fa-cake-candles tech-text"></i> 24岁</span>
-                    <span><i class="fa-solid fa-flag tech-text"></i> 共产党员</span>
-                    <span><i class="fa-solid fa-graduation-cap tech-text"></i> 硕士</span>
-                    <span><i class="fa-solid fa-phone tech-text"></i> 17751977509</span>
+                <div class="hero-stats animate-up delay-400">
+                    <span class="hero-stat"><b>M.S.</b> 计算机科学与技术</span>
+                    <span class="hero-stat"><b>2×</b> 名企实习</span>
+                    <span class="hero-stat"><b>3</b> 篇论文发表</span>
+                    <span class="hero-stat"><b>2026</b> 秋招求职中</span>
                 </div>
-                <p class="animate-up delay-500" style="margin-top: 50px; color: var(--text-muted); opacity: 0.7;"><i class="fa-solid fa-arrow-right-arrow-left fa-fade"></i> 使用方向键或点击右下角控制翻页</p>
+                <p class="animate-up delay-500" style="margin-top: 38px; color: var(--text-muted); opacity: .65; font-size:.9rem;"><i class="fa-solid fa-arrow-right-arrow-left fa-fade"></i> 使用方向键或滑动屏幕浏览经历</p>
             </div>
         </div>
 
@@ -355,24 +413,24 @@
         <div class="slide">
             <div class="slide-content">
                 <h2 class="slide-header animate-up">核心优势与竞争力</h2>
-                <div class="grid-layout">
-                    <div class="glass-card animate-up delay-100 tilt-card">
-                        <i class="fa-solid fa-microchip tech-text" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                <div class="grid-layout advantage-grid">
+                    <div class="glass-card advantage-card animate-up delay-100 tilt-card">
+                        <i class="fa-solid fa-microchip tech-text advantage-icon" style="font-size: 3rem; margin-bottom: 20px;"></i>
                         <h3>业务落地与架构</h3>
                         <p style="color:var(--text-muted); margin-top:15px; line-height: 1.6;">聚焦大模型业务落地，具备 <strong>多 Agent 架构设计</strong> 与企业级 Agent 调优经验。打通底层大模型与上层商业应用的壁垒。</p>
                     </div>
-                    <div class="glass-card animate-up delay-200 tilt-card">
-                        <i class="fa-solid fa-book-open-reader tech-text" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                    <div class="glass-card advantage-card animate-up delay-200 tilt-card">
+                        <i class="fa-solid fa-book-open-reader tech-text advantage-icon" style="font-size: 3rem; margin-bottom: 20px;"></i>
                         <h3>科研硬实力</h3>
                         <p style="color:var(--text-muted); margin-top:15px; line-height: 1.6;">拥有扎实的多模态科研背景，以第一作者在 ICIC(CCF-C) 及 SCI 发表3篇论文 并有一篇 <strong> AAAI(CCF-A) 在投</strong> 。</p>
                     </div>
-                    <div class="glass-card animate-up delay-300 tilt-card">
-                        <i class="fa-solid fa-chart-network tech-text" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                    <div class="glass-card advantage-card animate-up delay-300 tilt-card">
+                        <i class="fa-solid fa-chart-network tech-text advantage-icon" style="font-size: 3rem; margin-bottom: 20px;"></i>
                         <h3>数据建模能力</h3>
                         <p style="color:var(--text-muted); margin-top:15px; line-height: 1.6;">作为队长负责核心解决方案，带队斩获美赛 M 奖、国研赛等 <strong>近 10 项国家级及国际级</strong> 数学建模大奖。</p>
                     </div>
-                    <div class="glass-card animate-up delay-400 tilt-card">
-                        <i class="fa-solid fa-bolt tech-text" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                    <div class="glass-card advantage-card animate-up delay-400 tilt-card">
+                        <i class="fa-solid fa-bolt tech-text advantage-icon" style="font-size: 3rem; margin-bottom: 20px;"></i>
                         <h3>敏捷开发理念</h3>
                         <p style="color:var(--text-muted); margin-top:15px; line-height: 1.6;">践行 <span class="tech-text">Vibe Coding</span> 敏捷开发模式，致力于将前沿 AI 技术高效转化为高可用的商业产品。</p>
                     </div>
@@ -419,7 +477,6 @@
                             <li>获市级优秀共青团员、优秀实习生、校一等奖学金(3次)、优秀毕业生、优秀毕业论文等荣誉。</li>
                         </ul>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -490,6 +547,48 @@
                             <p style="color:var(--text-main); line-height: 1.7; margin-top:10px;">实现了底层功能的完全解耦与高速上下文共享，显著提升了整体链路的生成效率。</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 华为图灵业务部门 实习 -->
+        <div class="slide">
+            <div class="slide-content">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 40px;">
+                    <h2 class="slide-header animate-up" style="margin-bottom:0;">核心架构实习 <span style="font-size:0.5em;color:var(--text-muted);font-weight:normal;display:block;">华为技术有限公司 - 图灵业务部门</span></h2>
+                    <span class="tech-text animate-up delay-100" style="font-size: 1.2rem; background:rgba(0,240,255,0.1); padding: 5px 15px; border-radius: 20px;">2026.07 - 2026.09</span>
+                </div>
+                
+                <div class="glass-card animate-up delay-200 tilt-card">
+                    <h3 style="color:var(--primary); font-size: 1.8rem; margin-bottom: 10px;">PyPTO 算子开发框架 <span style="font-size:1rem; color:var(--text-muted); font-weight:normal; border:1px solid #555; padding: 2px 8px; border-radius: 5px; margin-left: 10px;">第一负责人</span></h3>
+                    <p class="tech-text" style="font-size:0.9rem; margin-bottom: 25px;">[ Python, Triton, PyPTO, PyTorch, CANN, Ascend NPU, LLM Multi-Agent ]</p>
+                    
+                    <ul class="tech-list">
+                        <li><strong>算子自动化转换架构：</strong> 基于 LLM 多智能体与状态机驱动编排，主导设计 Triton Kernel 到昇腾 NPU 算子的自动转换流水线。将系统解耦为<span class="highlight">“语义提取→设计→实现→验证”</span>四大独立阶段，大幅提升算子迁移效率。</li>
+                        <li><strong>编译 Pass 底层优化：</strong> 针对编译器 Common Operation Eliminate Pass 进行白盒性能优化。采用 FNV-1A 算法将 Hash 计算重构为纯数值化的逐字段 Mix 计算，并引入 opcode/operand 数值快路径比较，突破原有性能瓶颈。</li>
+                        <li><strong>测试基建与精度对齐：</strong> 从 0 到 1 构建覆盖 4 大类算子、14 个核心用例的泛化测试集。主导“多精度 × 多 Shape × 多随机种子”严格交叉验证，实现转换算子精度 <span class="highlight-num">100%</span> 通过。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SparkFlow Vibe Coding 项目 -->
+        <div class="slide">
+            <div class="slide-content">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 40px;">
+                    <h2 class="slide-header animate-up" style="margin-bottom:0;">全栈工程实践 <span style="font-size:0.5em;color:var(--text-muted);font-weight:normal;display:block;">SparkFlow - Vibe Coding 敏捷开发</span></h2>
+                    <span class="tech-text animate-up delay-100" style="font-size: 1.2rem; background:rgba(0,255,102,0.1); padding: 5px 15px; border-radius: 20px;">2026.05 - 2026.07</span>
+                </div>
+                
+                <div class="glass-card animate-up delay-200 tilt-card">
+                    <h3 style="color:var(--secondary); font-size: 1.8rem; margin-bottom: 10px;">LLM 驱动的灵感可视化与动画生成平台 <span style="font-size:1rem; color:var(--text-muted); font-weight:normal; border:1px solid #555; padding: 2px 8px; border-radius: 5px; margin-left: 10px;">第一负责人</span></h3>
+                    <p class="tech-text" style="font-size:0.9rem; margin-bottom: 25px; color:var(--secondary);">[ Java (Spring Boot), React, React Flow, Zustand, MCP, 多平台 LLM API ]</p>
+                    
+                    <ul class="tech-list">
+                        <li><strong>LLM 推理管线：</strong> 抽象 Provider 层兼容 5 大模型，通过 Few-shot + 意图分类动态编排 Prompt，配合三层 JSON 容错机制保障输出稳定性。</li>
+                        <li><strong>长效记忆与回溯：</strong> 构建 User-Memory-Session 三层存储机制，异步抽取并持久化用户偏好，按权重动态注入 Prompt；引入快照日志，支持灵感图谱状态<span class="highlight">一键无损回溯</span>。</li>
+                        <li><strong>动效呈现与导出：</strong> 结合 React Flow 扇区布局与 SVG 贝塞尔曲线动画构建可视化引擎，支持 iframe 沙箱预览及 HTML/Markdown 双格式导出。</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -628,25 +727,21 @@
         <!-- Slide 9: 封底 / Q&A -->
         <div class="slide">
             <div class="slide-content hero-layout">
-                <h1 class="title-glow animate-up">Let's Connect</h1>
-                <p class="animate-up delay-100" style="font-size: 1.8rem; margin: 20px 0 50px; color: var(--text-muted);">感谢聆听，期待您的指导与交流！</p>
+                <div class="hero-kicker animate-up">Available for 2026 Fall Recruitment</div>
+                <h1 class="title-glow animate-up">Let's Build What Matters.</h1>
+                <p class="animate-up delay-100" style="font-size: 1.25rem; margin: 18px 0 34px; color: var(--text-muted);">期待用工程能力，将前沿 AI 转化为真实价值。</p>
                 
-                <div class="glass-card animate-up delay-200 tilt-card" style="padding: 40px 60px;">
-                    <div style="font-family: var(--font-tech); font-size: 1.5rem; display: flex; flex-direction: column; gap: 20px; align-items: flex-start;">
-                        <div style="display: flex; align-items: center; gap: 15px; cursor: pointer;" onclick="copyText('17751977509@163.com')" title="点击复制邮箱">
-                            <div style="width:50px;height:50px;border-radius:10px;background:rgba(0,240,255,0.1);display:flex;justify-content:center;align-items:center;color:var(--primary);">
-                                <i class="fa-solid fa-envelope"></i>
-                            </div>
-                            <span>17751977509@163.com</span>
+                <div class="glass-card connect-card animate-up delay-200 tilt-card">
+                    <div class="contact-grid">
+                        <div class="contact-item" onclick="copyText('17751977509@163.com')" title="点击复制邮箱">
+                            <div class="contact-icon"><i class="fa-solid fa-envelope"></i></div><div><small>EMAIL · 点击复制</small><span>17751977509@163.com</span></div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 15px; cursor: pointer;" onclick="copyText('17751977509')" title="点击复制手机号">
-                            <div style="width:50px;height:50px;border-radius:10px;background:rgba(0,255,102,0.1);display:flex;justify-content:center;align-items:center;color:var(--secondary);">
-                                <i class="fa-solid fa-phone"></i>
-                            </div>
-                            <span>17751977509</span>
+                        <div class="contact-item" onclick="copyText('17751977509')" title="点击复制手机号">
+                            <div class="contact-icon" style="color:var(--secondary);background:rgba(0,255,102,.1)"><i class="fa-solid fa-phone"></i></div><div><small>PHONE · 点击复制</small><span>17751977509</span></div>
                         </div>
                     </div>
                 </div>
+                <p class="animate-up delay-300" style="margin-top:24px; color:var(--text-muted); font:.78rem var(--font-tech); letter-spacing:.08em;">THANK YOU FOR YOUR TIME · OPEN TO DISCUSSIONS</p>
                 
                 <div id="toast" style="position:fixed; bottom: 100px; left:50%; transform:translateX(-50%); background:var(--primary); color:var(--bg-base); padding: 10px 20px; border-radius:30px; font-weight:bold; opacity:0; transition: opacity 0.3s; pointer-events:none;">已复制到剪贴板！</div>
             </div>
