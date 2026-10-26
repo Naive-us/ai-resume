@@ -262,6 +262,19 @@
         .hero-stats { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:25px; }
         .hero-stat { padding:8px 13px; border-radius:8px; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.1); color:#d1d5db; font: .78rem var(--font-tech); }
         .hero-stat b { color:var(--secondary); font-weight:600; }
+        .hero-current {
+            display:flex; align-items:center; gap:10px; margin:0 0 18px; padding:9px 16px;
+            border-radius:999px; background:linear-gradient(90deg, rgba(245,158,11,.12), rgba(239,68,68,.1));
+            border:1px solid rgba(245,158,11,.45); color:#f8fafc; font:.82rem var(--font-tech);
+            box-shadow:0 0 24px rgba(245,158,11,.08);
+        }
+        .hero-current::before { content:''; width:8px; height:8px; flex:0 0 8px; border-radius:50%; background:#22c55e; box-shadow:0 0 12px #22c55e; }
+        .hero-current strong { color:#fbbf24; }
+        .honor-badge {
+            display:inline-flex; align-items:center; gap:7px; padding:6px 12px; border-radius:999px;
+            background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.45);
+            color:#fbbf24; font:600 .78rem var(--font-tech); white-space:nowrap;
+        }
         .connect-card { max-width:750px; width:100%; padding:34px 42px !important; position:relative; overflow:hidden; }
         .connect-card::after { content:'OPEN TO WORK'; position:absolute; right:-52px; top:20px; transform:rotate(35deg); color:rgba(0,240,255,.08); font:900 2rem var(--font-display); }
         .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; position:relative; z-index:1; }
@@ -323,6 +336,8 @@
             .identity-orbit { width:130px; height:130px; margin-bottom:18px; }
             .identity-monogram { font-size:2.65rem; }
             .hero-role { font-size:1rem; }
+            .hero-current { max-width:100%; min-width:0; flex-direction:column; gap:3px; padding:8px 14px; text-align:center; font-size:.75rem; }
+            .hero-current::before { display:none; }
             .contact-grid { grid-template-columns:1fr; }
             .connect-card { padding:24px !important; }
 
@@ -393,15 +408,16 @@
                 <div class="identity-orbit animate-up floating" aria-label="孙游阳个人标识">
                     <span class="orbit-dot"></span><span class="identity-monogram">SY</span>
                 </div>
-                <div class="hero-kicker animate-up delay-100">AI Engineer / 2026 Graduate</div>
+                <div class="hero-kicker animate-up delay-100">AI Engineer / Huawei Intern / 2026 Graduate</div>
                 <h1 class="title-glow animate-up delay-100" style="margin-bottom: 8px;">孙 游 阳</h1>
                 <h2 class="hero-role animate-up delay-200">AI 研发工程师 · 多智能体 / 算子编译 / 企业级落地</h2>
+                <div class="hero-current animate-up delay-300"><strong>华为图灵业务部门 · 在岗实习</strong><span>2026 暑期优秀实习生</span></div>
                 <div class="animate-up delay-300" style="font-size: 1.3rem; margin-bottom: 14px; height: 35px;">
                     <span class="tech-text typewriter-container" id="typewriter"></span>
                 </div>
                 <div class="hero-stats animate-up delay-400">
                     <span class="hero-stat"><b>M.S.</b> 计算机科学与技术</span>
-                    <span class="hero-stat"><b>2×</b> 名企实习</span>
+                    <span class="hero-stat"><b>Huawei + Bosch</b> 名企实习</span>
                     <span class="hero-stat"><b>3</b> 篇论文发表</span>
                     <span class="hero-stat"><b>2026</b> 秋招求职中</span>
                 </div>
@@ -416,8 +432,8 @@
                 <div class="grid-layout advantage-grid">
                     <div class="glass-card advantage-card animate-up delay-100 tilt-card">
                         <i class="fa-solid fa-microchip tech-text advantage-icon" style="font-size: 3rem; margin-bottom: 20px;"></i>
-                        <h3>业务落地与架构</h3>
-                        <p style="color:var(--text-muted); margin-top:15px; line-height: 1.6;">聚焦大模型业务落地，具备 <strong>多 Agent 架构设计</strong> 与企业级 Agent 调优经验。打通底层大模型与上层商业应用的壁垒。</p>
+                        <h3>华为 AI Infra 实践</h3>
+                        <p style="color:var(--text-muted); margin-top:15px; line-height: 1.6;">目前在华为图灵业务部门实习，主导 <strong>Triton → PyPTO 算子转换 Agent</strong>，以多智能体、状态机和工程门禁推进昇腾 NPU 算子迁移。</p>
                     </div>
                     <div class="glass-card advantage-card animate-up delay-200 tilt-card">
                         <i class="fa-solid fa-book-open-reader tech-text advantage-icon" style="font-size: 3rem; margin-bottom: 20px;"></i>
@@ -481,7 +497,31 @@
             </div>
         </div>
 
-        <!-- Slide 4: Bosch 实习 1 -->
+        <!-- Slide 4: 华为图灵业务部门实习（当前在岗） -->
+        <div class="slide">
+            <div class="slide-content">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 34px;">
+                    <h2 class="slide-header animate-up" style="margin-bottom:0;">华为实习 · AI Infra <span style="font-size:0.5em;color:var(--text-muted);font-weight:normal;display:block;">华为技术有限公司 · 图灵业务部门 · AI 应用开发</span></h2>
+                    <div class="animate-up delay-100" style="display:flex; flex-direction:column; align-items:flex-end; gap:9px;">
+                        <span class="honor-badge"><i class="fa-solid fa-award"></i> 2026 暑期优秀实习生</span>
+                        <span class="tech-text" style="font-size:1.05rem; background:rgba(0,240,255,0.1); padding:5px 15px; border-radius:20px;">2026.07 - 2026.11 · 在岗</span>
+                    </div>
+                </div>
+
+                <div class="glass-card animate-up delay-200 tilt-card">
+                    <h3 style="color:var(--primary); font-size:1.8rem; margin-bottom:10px;">T2P Agent — Triton to PyPTO 算子转换工具 <span style="font-size:1rem; color:var(--text-muted); font-weight:normal; border:1px solid #555; padding:2px 8px; border-radius:5px; margin-left:10px;">第一负责人</span></h3>
+                    <p class="tech-text" style="font-size:0.9rem; margin-bottom:25px;">[ Python, Triton, PyPTO, PyTorch, CANN, Ascend NPU, LLM Multi-Agent ]</p>
+
+                    <ul class="tech-list">
+                        <li><strong>“1 主 8 从”多智能体架构：</strong>主导构建 Triton 至 PyPTO 的自动转换工具，将链路解耦为“提取 → 设计 → 实现 → 验证”四阶段；以纯函数状态机与黑板模式作为调度中枢，降低对 Prompt 软约束的依赖。</li>
+                        <li><strong>工程护栏与幻觉熔断：</strong>引入多级 AST Lint 门禁与 SHA-256 文件哈希冻结，以可验证的物理护栏约束 LLM 越权修改和错误产物，保障复杂 Agent 流程稳定可控。</li>
+                        <li><strong>测试基建与 NPU 性能归因：</strong>从 0 到 1 搭建覆盖 <span class="highlight-num">20 类算子 / 60 组 Shape</span> 的沙箱测试 Agent；通过 torch.npu.Event 与 Profiler 拆解 AICore/AICpu 耗时，结合 Schema 契约完成交叉验证，转换算子精度 <span class="highlight-num">100%</span> 通过。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Bosch 实习 1 -->
         <div class="slide">
             <div class="slide-content">
                 <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 40px;">
@@ -516,7 +556,7 @@
             </div>
         </div>
 
-        <!-- Slide 5: Bosch 实习 2 -->
+        <!-- Slide 6: Bosch 实习 2 -->
         <div class="slide">
             <div class="slide-content">
                 <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 40px;">
@@ -547,27 +587,6 @@
                             <p style="color:var(--text-main); line-height: 1.7; margin-top:10px;">实现了底层功能的完全解耦与高速上下文共享，显著提升了整体链路的生成效率。</p>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 华为图灵业务部门 实习 -->
-        <div class="slide">
-            <div class="slide-content">
-                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 40px;">
-                    <h2 class="slide-header animate-up" style="margin-bottom:0;">核心架构实习 <span style="font-size:0.5em;color:var(--text-muted);font-weight:normal;display:block;">华为技术有限公司 - 图灵业务部门</span></h2>
-                    <span class="tech-text animate-up delay-100" style="font-size: 1.2rem; background:rgba(0,240,255,0.1); padding: 5px 15px; border-radius: 20px;">2026.07 - 2026.09</span>
-                </div>
-                
-                <div class="glass-card animate-up delay-200 tilt-card">
-                    <h3 style="color:var(--primary); font-size: 1.8rem; margin-bottom: 10px;">PyPTO 算子开发框架 <span style="font-size:1rem; color:var(--text-muted); font-weight:normal; border:1px solid #555; padding: 2px 8px; border-radius: 5px; margin-left: 10px;">第一负责人</span></h3>
-                    <p class="tech-text" style="font-size:0.9rem; margin-bottom: 25px;">[ Python, Triton, PyPTO, PyTorch, CANN, Ascend NPU, LLM Multi-Agent ]</p>
-                    
-                    <ul class="tech-list">
-                        <li><strong>算子自动化转换架构：</strong> 基于 LLM 多智能体与状态机驱动编排，主导设计 Triton Kernel 到昇腾 NPU 算子的自动转换流水线。将系统解耦为<span class="highlight">“语义提取→设计→实现→验证”</span>四大独立阶段，大幅提升算子迁移效率。</li>
-                        <li><strong>编译 Pass 底层优化：</strong> 针对编译器 Common Operation Eliminate Pass 进行白盒性能优化。采用 FNV-1A 算法将 Hash 计算重构为纯数值化的逐字段 Mix 计算，并引入 opcode/operand 数值快路径比较，突破原有性能瓶颈。</li>
-                        <li><strong>测试基建与精度对齐：</strong> 从 0 到 1 构建覆盖 4 大类算子、14 个核心用例的泛化测试集。主导“多精度 × 多 Shape × 多随机种子”严格交叉验证，实现转换算子精度 <span class="highlight-num">100%</span> 通过。</li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -863,7 +882,7 @@
         });
 
         // --- 3. 首页打字机特效 ---
-        const textArray = ["LLM Agent 架构设计", "NL2SQL 方案优化", "RAG 系统落地", "Vibe Coding 实践"];
+        const textArray = ["华为 T2P 多智能体架构", "昇腾 NPU 算子转换", "NL2SQL 方案优化", "企业级 Agent 落地"];
         let textIndex = 0;
         let charIndex = 0;
         const typeContainer = document.getElementById("typewriter");
